@@ -1,0 +1,39 @@
+{
+  "name": "github-clone-all",
+  "version": "1.0.0",
+  "description": "Clones all your Github repositories, including private ones.",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint src"
+  },
+  "bin": {
+    "github-clone-all": "./index.js"
+  },
+  "author": "Lars Graubner <mail@larsgraubner.de> (https://larsgraubner.com)",
+  "license": "MIT",
+  "dependencies": {
+    "async": "2.6.0",
+    "axios": "0.17.1",
+    "chalk": "2.3.0",
+    "mri": "1.1.0",
+    "ora": "1.3.0"
+  },
+  "devDependencies": {
+    "eslint": "4.12.0",
+    "eslint-config-airbnb": "16.1.0",
+    "eslint-config-prettier": "2.8.0",
+    "eslint-plugin-import": "2.8.0",
+    "eslint-plugin-jsx-a11y": "6.0.2",
+    "eslint-plugin-react": "7.5.1",
+    "husky": "0.14.3",
+    "lint-staged": "5.0.0",
+    "prettier": "1.8.2"
+  },
+  "lint-staged": {
+    "*.js": [
+      "lint",
+      "prettier",
+      "git add"
+    ]
+  }
+}
