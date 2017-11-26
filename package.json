@@ -1,6 +1,6 @@
 {
   "name": "github-clone-all",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Clones all your Github repositories, including private ones.",
   "main": "index.js",
   "scripts": {
