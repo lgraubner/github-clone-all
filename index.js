@@ -8,6 +8,7 @@ const path = require('path')
 const eachLimit = require('async/eachLimit')
 const chalk = require('chalk')
 const fs = require('fs')
+const pkg = require('./package.json')
 
 const args = process.argv.slice(2)
 
@@ -26,13 +27,19 @@ if (options.help) {
 
   Options:
 
+    --help                    output usage information
+    --version                 output the version number
     --access-token <token>    personal github access token (required)
     --username <user>         Github username (required)
     --ignore-forks            ignore forked repositories
     --ignore <repos>          comma seperated list of repositories to ignore
     --max-concurrency <num>   max concurrent clone processes (default: 5)
-    --help                    output usage information
   `)
+  process.exit()
+}
+
+if (options.version) {
+  console.log(pkg.version)
   process.exit()
 }
 
