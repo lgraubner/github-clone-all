@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const mri = require('mri')
 const axios = require('axios')
 const { exec } = require('child_process')
