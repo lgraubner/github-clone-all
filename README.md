@@ -35,12 +35,13 @@ Usage: github-clone-all [options] [destination]
 
   Options:
 
+    --help                    output usage information
+    --version                 output the version number
     --access-token <token>    personal github access token (required)
     --username <user>         Github username (required)
     --ignore-forks            ignore forked repositories
     --ignore <repos>          comma seperated list of repositories to ignore
     --max-concurrency <num>   max concurrent clone processes (default: 5)
-    --help                    output usage information
 ```
 
 ### access-token
