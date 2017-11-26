@@ -1,7 +1,8 @@
 {
   "name": "github-clone-all",
   "version": "1.1.0",
-  "description": "Clones all your Github repositories, including private ones.",
+  "description": "Clone all your Github repositories, including private ones.",
+  "homepage": "https://github.com/lgraubner/github-clone-all",
   "main": "index.js",
   "scripts": {
     "lint": "eslint src"
@@ -10,7 +11,25 @@
     "github-clone-all": "./index.js"
   },
   "author": "Lars Graubner <mail@larsgraubner.de> (https://larsgraubner.com)",
+  "keywords": [
+    "github",
+    "git",
+    "clone",
+    "backup",
+    "graphql",
+    "ecosystem:node"
+  ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lgraubner/github-clone-all.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lgraubner/github-clone-all/issues"
+  },
+  "engines": {
+    "node": ">=6"
+  },
   "dependencies": {
     "async": "2.6.0",
     "axios": "0.17.1",
