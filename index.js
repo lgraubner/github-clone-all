@@ -81,17 +81,9 @@ function fetchRepositories() {
 }
 
 function clone(repo, dest, spinner, callback) {
-  const { name, url, isFork } = repo
+  const { name, url } = repo
 
   const destFolder = path.resolve(dest, name)
-
-  if (
-    ignoredRepos.indexOf(name) !== -1 ||
-    (options['ignore-forks'] && isFork)
-  ) {
-    callback(null)
-    return
-  }
 
   fs.access(destFolder, accessErr => {
     // folder does not exist
@@ -128,11 +120,16 @@ fetchRepositories().then(res => {
       repos,
       options['max-concurrency'],
       (repo, callback) => {
-        if (options['ignore-forks'] && repo.isFork) {
+        const { name, isFork, node } = repo
+        if (
+          ignoredRepos.indexOf(name) !== -1 ||
+          (options['ignore-forks'] && isFork)
+        ) {
+          callback(null)
           return
         }
 
-        clone(repo.node, dest, spinner, callback)
+        clone(node, dest, spinner, callback)
       },
       () => {
         spinner.clear()
