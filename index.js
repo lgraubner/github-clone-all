@@ -67,8 +67,19 @@ function fetchRepositories() {
                   repositories(first: 100) {
                       edges {
                           node {
-                              name,
-                              url,
+                              name
+                              url
+                              isFork
+                          }
+                      }
+                  }
+              }
+              organization(login: "${options.username}") {
+                  repositories(first: 100) {
+                      edges {
+                          node {
+                              name
+                              url
                               isFork
                           }
                       }
@@ -105,8 +116,8 @@ function clone(repo, dest, spinner, callback) {
 }
 
 fetchRepositories().then(res => {
-  if (res.data.data !== null) {
-    const repos = res.data.data.user.repositories.edges
+  if (res.data.data && Object.keys(res.data.data).length != 0) {
+    const repos = (res.data.data.user || res.data.data.organization).repositories.edges
 
     let dest = './'
     if (options._.length) {
@@ -136,5 +147,10 @@ fetchRepositories().then(res => {
         process.exit()
       }
     )
+    return
+  }
+  if (res.data.errors && res.data.errors.length) {
+    res.data.errors.map(e => e.message).map(console.error)
+    return
   }
 })
