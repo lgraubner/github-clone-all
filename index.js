@@ -8,6 +8,7 @@ const path = require('path')
 const eachLimit = require('async/eachLimit')
 const chalk = require('chalk')
 const fs = require('fs')
+
 const pkg = require('./package.json')
 
 const args = process.argv.slice(2)
@@ -53,6 +54,8 @@ if (!options.username) {
 
 const ignoredRepos = options.ignore.split(',')
 
+let done = 0
+
 function fetchRepositories() {
   return axios({
     url: 'https://api.github.com/graphql',
@@ -91,33 +94,36 @@ function fetchRepositories() {
   })
 }
 
-function clone(repo, dest, spinner, callback) {
-  const { name, url } = repo
+function download(repository, dest, spinner, callback) {
+  const { url, name } = repository
 
-  const destFolder = path.resolve(dest, name)
+  const filePath = path.resolve(dest, `${name}.tar.gz`)
 
-  fs.access(destFolder, accessErr => {
-    // folder does not exist
-    if (accessErr) {
-      exec(`git clone ${url}.git ${destFolder}`, err => {
-        if (err) {
-          ora().fail(name)
-        } else {
-          ora().succeed(name)
-        }
+  const exists = fs.existsSync(filePath)
 
-        callback(null)
-      })
-    } else {
-      ora().succeed(`${name} ${chalk.dim('(exists)')}`)
+  if (!exists) {
+    const curl = `curl -H "Authorization: token ${
+      options['access-token']
+    } -L ${url}/tarball/master > ${filePath}`
+
+    exec(curl, function(err) {
+      if (err) {
+        throw err
+      }
+
       callback(null)
-    }
-  })
+    })
+  } else {
+    callback(null)
+  }
+
+  done++
 }
 
 fetchRepositories().then(res => {
   if (res.data.data && Object.keys(res.data.data).length != 0) {
-    const repos = (res.data.data.user || res.data.data.organization).repositories.edges
+    const repos = (res.data.data.user || res.data.data.organization)
+      .repositories.edges
 
     let dest = './'
     if (options._.length) {
@@ -125,7 +131,14 @@ fetchRepositories().then(res => {
       dest = options._[0]
     }
 
-    const spinner = ora(`Cloning repositories...`).start()
+    const destFolder = path.resolve(dest)
+
+    // create target folder if not exists
+    if (!fs.existsSync(destFolder)) {
+      fs.mkdirSync(destFolder)
+    }
+
+    const spinner = ora(`Downloading archives...`).start()
 
     eachLimit(
       repos,
@@ -140,10 +153,18 @@ fetchRepositories().then(res => {
           return
         }
 
-        clone(node, dest, spinner, callback)
+        spinner.text = `Downloading archives... (${done}/${
+          repos.length
+        }) ${chalk.dim(node.name)}`
+
+        download(node, dest, spinner, callback)
       },
       () => {
-        spinner.clear()
+        spinner.succeed(
+          `Downloaded repositories for Github user ${
+            options.username
+          } to "${path.resolve(dest)}".`
+        )
         process.exit()
       }
     )

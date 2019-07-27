@@ -19,6 +19,8 @@ This module is available on [npm](https://www.npmjs.com/).
 $ npm install -g github-clone-all
 ```
 
+This package requires `curl` to run on your system!
+
 ## Usage
 
 An access token and an username are required. All repositories will be cloned into the current working directory if not specified otherwise.
@@ -67,4 +69,3 @@ By default up to five repositories will be cloned concurrently. Can be adjusted 
 ## License
 
 [MIT](https://github.com/lgraubner/github-clone-all/blob/master/LICENSE) © [Lars Graubner](https://larsgraubner.com)
-
