@@ -104,7 +104,7 @@ function download(repository, dest, spinner, callback) {
   if (!exists) {
     const curl = `curl -H "Authorization: token ${
       options['access-token']
-    } -L ${url}/tarball/master > ${filePath}`
+    }" -L ${url}/tarball/master > ${filePath}`
 
     exec(curl, function(err) {
       if (err) {
