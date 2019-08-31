@@ -8,6 +8,7 @@ const path = require('path')
 const eachLimit = require('async/eachLimit')
 const chalk = require('chalk')
 const fs = require('fs')
+const rimraf = require('rimraf')
 
 const pkg = require('./package.json')
 
@@ -29,6 +30,7 @@ function help() {
     --ignore-forks            ignore forked repositories
     --ignore <repos>          comma seperated list of repositories to ignore
     --max-concurrency <num>   max concurrent clone processes (default: 5)
+    --overwrite               remove previously downloaded repositories
   `)
 }
 
@@ -70,15 +72,15 @@ function fetchRepositories(username, accessToken) {
   })
 }
 
-function download(repository, accessToken, dest, spinner, callback) {
+function download(repository, dest, spinner, options, callback) {
   const { url, name } = repository
 
   const filePath = path.resolve(dest, `${name}.tar.gz`)
 
   const exists = fs.existsSync(filePath)
 
-  if (!exists) {
-    const curl = `curl -H "Authorization: token ${accessToken}" -L ${url}/tarball/master > ${filePath}`
+  function downloadFile(callback) {
+    const curl = `curl -H "Authorization: token ${options.accessToken}" -L ${url}/tarball/master > ${filePath}`
 
     exec(curl, function(err) {
       if (err) {
@@ -87,9 +89,23 @@ function download(repository, accessToken, dest, spinner, callback) {
 
       callback(null)
     })
-  } else {
-    callback(null)
   }
+
+  if (exists && options.overwrite) {
+    rimraf(filePath, () => {
+      downloadFile(callback)
+    })
+
+    return
+  }
+
+  if (!exists) {
+    downloadFile(callback)
+
+    return
+  }
+
+  callback(null)
 }
 
 async function main(argv_) {
@@ -99,7 +115,8 @@ async function main(argv_) {
     default: {
       'ignore-forks': false,
       ignore: '',
-      'max-concurrency': 5
+      'max-concurrency': 5,
+      overwrite: false
     }
   })
 
@@ -189,7 +206,7 @@ async function main(argv_) {
             name
           )}`
 
-          download(repo.node, options['access-token'], dest, spinner, () => {
+          download(repo.node, dest, spinner, options, () => {
             done++
             callback()
           })
