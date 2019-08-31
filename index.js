@@ -30,7 +30,7 @@ function help() {
     --ignore-forks            ignore forked repositories
     --ignore <repos>          comma seperated list of repositories to ignore
     --max-concurrency <num>   max concurrent clone processes (default: 5)
-    --overwrite               remove previously downloaded repositories
+    --overwrite               overwrite previously downloaded repositories
   `)
 }
 

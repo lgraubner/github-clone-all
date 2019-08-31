@@ -44,6 +44,7 @@ Usage: github-clone-all [options] [destination]
     --ignore-forks            ignore forked repositories
     --ignore <repos>          comma seperated list of repositories to ignore
     --max-concurrency <num>   max concurrent clone processes (default: 5)
+    --overwrite               overwrite previously downloaded repositories
 ```
 
 ### access-token
@@ -65,6 +66,10 @@ Comma seperated list of repositories to ignore.
 ### max-concurrency
 
 By default up to five repositories will be cloned concurrently. Can be adjusted it with this option.
+
+### overwrite
+
+Overwrite existing repository archives.
 
 ## License
 
